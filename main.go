@@ -9,14 +9,19 @@ import (
 	"time"
 
 	"beanbot/handlers"
+	"beanbot/listener"
+
 	"github.com/bwmarrin/discordgo"
 
-	// Importing a module here handles everything
+	// Importing a command module here takes care of everything
 
 	// Active Modules
 	_ "beanbot/commands/bet"
+	_ "beanbot/commands/configure"
+	_ "beanbot/commands/give"
+	_ "beanbot/commands/help"
 	_ "beanbot/commands/leaderboard"
-	// Passive Modules
+	_ "beanbot/commands/query"
 )
 
 func main() {
@@ -49,7 +54,6 @@ func main() {
 
 	// Register message handlers
 	dg.AddHandler(handlers.OnMessageCreate)
-	dg.AddHandler(handlers.OnMessageUpdate)
 
 	// Open connection
 	err = dg.Open()
@@ -59,16 +63,16 @@ func main() {
 
 	rand.Seed(time.Now().Unix())
 
-	log.Println("Golords bot is alive. SIGINT exits.")
-	dg.ChannelMessageSend(learntocount.LtcChan, "=====GOLORDS BOT IS ALIVE=====")
+	// Load messages sent since we were offline in each server if applicable
+	listener.LoadUnseenMessages(dg)
 
+	log.Println("Golords bot is alive. SIGINT exits.")
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
 
-	// Give this message some time to send
-	dg.ChannelMessageSend(learntocount.LtcChan, "===THE BOT IS GOING OFFLINE===")
-	time.Sleep(5 * time.Second)
+	// Ensure we don't quit in the middle of a message being parsed due to bad timing
+	listener.CleanupHeap()
 
 	log.Println("SIGINT Registered. Shutting down.")
 	log.Println("Goodbye <3")

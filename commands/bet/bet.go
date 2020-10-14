@@ -2,11 +2,9 @@ package bet
 
 import (
 	"fmt"
-	"log"
 	"math/rand"
 	"strconv"
 	"strings"
-	"time"
 
 	"beanbot/handlers"
 	"beanbot/state"
@@ -72,13 +70,17 @@ func (h Bet) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	challengeesBalance, err := state.GetUserBalance(serverID, challengee)
 	if err != nil {
+		s.ChannelMessageSend(m.ChannelID, "There was a problem creating your challenge.")
+		return
+	}
+	if challengeesBalance < amount {
 		s.ChannelMessageSend(m.ChannelID, "The person you're challenging does not have enough beans to make that bet.")
 		return
 	}
 
 	// Verify the game doesn't already exist
 	for _, challenge := range challenges {
-		if challenger.ServerID == serverID &&
+		if challenge.ServerID == serverID &&
 			challenge.Challenger == challenger &&
 			challenge.Challengee == challengee {
 			if challenge.Amount == amount {
@@ -95,7 +97,7 @@ func (h Bet) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 		Amount:     amount,
 	}
 	challenges = append(challenges, challenge)
-	s.ChannelMessageSend(m.ChannelID, "Challenge created for %d beans. Accept by challenging back.", amount)
+	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Challenge created for %d beans. Accept by challenging back.", amount))
 }
 
 func (h Bet) Prefixes() []string {
@@ -117,17 +119,12 @@ func executeBeanGame(index int) string {
 		loser = challenge.Challenger
 	}
 
-	// Transfer funds
-	_, err := state.AddToUserBalance(game.ServerID, winner, game.Amount)
+	err := state.TransferBeans(challenge.ServerID, loser, winner, challenge.Amount)
 	if err != nil {
-		return "There was a problem finishing the challenge."
-	}
-
-	_, err = state.AddToUserBalance(game.ServerID, loser, -game.Amount)
-	for err != nil {
-		log.Println("Problem resolving bean challenge, trying again in 30s.")
-		time.Sleep(30 * time.Second)
-		_, err = state.AddToUserBalance(game.ServerID, loser, -game.Amount)
+		// TODO should we just say who won if this happens?
+		// If this is broken they probably won't be able to manually give the beans anyways.
+		// Maybe all these DB errors should just panic.
+		return "An internal error occured while transferring the beans."
 	}
 
 	// Remove from the challenges list
@@ -135,5 +132,5 @@ func executeBeanGame(index int) string {
 	challenges[len(challenges)-1] = nil
 	challenges = challenges[:len(challenges)-1]
 
-	return fmt.Sprintf("%s won the bet between %s and %s for %d beans", winner, winner, loser, game.Amount)
+	return fmt.Sprintf("%s won the bet between %s and %s for %d beans", winner, winner, loser, challenge.Amount)
 }

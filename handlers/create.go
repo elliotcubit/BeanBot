@@ -4,6 +4,8 @@ import (
 	"beanbot/commands"
 	"github.com/bwmarrin/discordgo"
 	"strings"
+
+	"beanbot/listener"
 )
 
 var activeModules = []commands.ActiveModule{}
@@ -17,6 +19,10 @@ func OnMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.Bot {
 		return
 	}
+
+	// Always execute the LTC listener --
+	// Otherwise, !bean commands in LTC won't be counted as errors
+	listener.EvaluateMessage(s, m)
 
 	if !strings.HasPrefix(m.Content, "!bean") {
 		return
@@ -36,6 +42,4 @@ func OnMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 		}
 	}
-
-	// TODO passive listener
 }
