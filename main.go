@@ -21,7 +21,9 @@ import (
 	_ "beanbot/commands/give"
 	_ "beanbot/commands/help"
 	_ "beanbot/commands/leaderboard"
+	_ "beanbot/commands/max"
 	_ "beanbot/commands/query"
+	_ "beanbot/commands/risk"
 )
 
 func main() {

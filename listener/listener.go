@@ -45,6 +45,13 @@ func LoadUnseenMessages(s *discordgo.Session) {
 	}
 }
 
+func GetServerData(channelID string) *state.ChannelData {
+	if data, ok := ltcChans[channelID]; ok {
+		return data
+	}
+	return nil
+}
+
 func UpdateLTCChannel(serverID, channelID, messageID string) {
 	// Unregister the old channel if needed
 	var oldServerData *state.ChannelData

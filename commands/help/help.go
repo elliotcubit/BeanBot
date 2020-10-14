@@ -27,6 +27,7 @@ func (h Help) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 	helpMessage += "give: Give away your beans. !bean give [amount] @Someone\n"
 	helpMessage += "help: Show this message. !bean help\n"
 	helpMessage += "leaderboard: Who has the most/least beans? !bean leaderboard [top/bottom] [limit]\n"
+	helpMessage += "max: What is the highest number this server can count to? !bean max\n"
 	helpMessage += "query: How many beans does someone have? !bean query @Someone. [No @ means yourself]\n"
 
 	embed.Description = helpMessage
