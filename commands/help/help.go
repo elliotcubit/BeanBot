@@ -29,6 +29,7 @@ func (h Help) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 	helpMessage += "leaderboard: Who has the most/least beans? !bean leaderboard [top/bottom] [limit]\n"
 	helpMessage += "max: What is the highest number this server can count to? !bean max\n"
 	helpMessage += "query: How many beans does someone have? !bean query @Someone. [No @ means yourself]\n"
+	helpMessage += "risk: How many beans will I lose if I make a mistake? !bean risk\n"
 
 	embed.Description = helpMessage
 	s.ChannelMessageSendEmbed(m.ChannelID, embed)
