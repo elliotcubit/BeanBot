@@ -73,6 +73,10 @@ func ProcessMessage(m *state.MessageData) {
 		ltcChans[m.ChannelID].MostRecentNumber = m.Number
 		ltcChans[m.ChannelID].MostRecentAuthorID = m.AuthorID
 		ltcChans[m.ChannelID].MostRecentID = m.ID
+		// Set highest number locally if needed
+		if m.Number > ltcChans[m.ChannelID].HighestNumberAchieved {
+			ltcChans[m.ChannelID].HighestNumberAchieved = m.Number
+		}
 	} else {
 		num := ltcChans[m.ChannelID].MostRecentNumber
 		// Back to original state
