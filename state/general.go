@@ -2,7 +2,6 @@ package state
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"os"
 
