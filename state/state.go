@@ -31,7 +31,7 @@ mostrecentauthorid='%s',
 mostrecentnumber=%d,
 highestnumberachieved=GREATEST(highestnumberachieved, %d)
 WHERE channelid='%s'`
-
+var sumAllAmountsInServer string = `SELECT SUM(amount) FROM beans WHERE serverid='%s'`
 var createRowStatement string = `INSERT INTO
 beans(serverID, userID, amount) VALUES ('%s', '%s', %d)`
 var getRowStatement string = `SELECT amount FROM beans
@@ -77,6 +77,26 @@ type ChannelData struct {
 	// The most recent number we parsed. -1 if the number isn't set
 	MostRecentNumber      int
 	HighestNumberAchieved int
+}
+
+func GetServerSum(serverID string) int {
+	var amount int
+	rows, err := database.Query(fmt.Sprintf(
+		sumAllAmountsInServer,
+		serverID,
+	),
+	)
+	if err != nil {
+		return 0
+	}
+	defer rows.Close()
+	for rows.Next() {
+		err := rows.Scan(&amount)
+		if err != nil {
+			return 0
+		}
+	}
+	return amount
 }
 
 func GetAllServers() map[string]*ChannelData {
@@ -171,6 +191,30 @@ func GetUserBalance(server, user string) (int, error) {
 	}
 	// If we didn't get a result, amount will be 0 so we're gravy
 	return amount, nil
+}
+
+// Internal call that doesn't pprint results -- TODO make the pprint a wrapper around this one that convert them
+func UglyBeanLeaderboard(serverID string, direction bool, n int) ([]*BeanData, error) {
+	var user string
+	var amount int
+	result := make([]*BeanData, 0)
+	dir := "DESC"
+	if direction {
+		dir = "ASC"
+	}
+	rows, err := database.Query(fmt.Sprintf(getLeaderboardStatement, serverID, dir, n))
+	if err != nil {
+		return result, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		err := rows.Scan(&user, &amount)
+		if err != nil {
+			return result, err
+		}
+		result = append(result, &BeanData{User: user, Amount: amount})
+	}
+	return result, nil
 }
 
 func GetBeanLeaderboard(s *discordgo.Session, serverID string, direction bool, n int) ([]*BeanData, error) {

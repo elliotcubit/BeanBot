@@ -19,6 +19,32 @@ var ltcChans map[string]*state.ChannelData
 
 func init() {
 	ltcChans = state.GetAllServers()
+	// Ensure we remain at zero each reset (not including the beans that haven't popped)
+	for _, data := range ltcChans {
+		totalBeans := state.GetServerSum(data.ServerID)
+		n := data.MostRecentNumber
+		expectedBeans := (n * (n + 1)) / 2
+		if totalBeans != expectedBeans {
+			balance := expectedBeans - totalBeans
+			// If we are giving + beans, give them to the poorest
+			if balance > 0 {
+				people, err := state.UglyBeanLeaderboard(data.ServerID, true, 1)
+				if err != nil {
+					continue
+				}
+				userID := people[0].User
+				state.AddBeans(data.ServerID, userID, balance)
+				// Otherwise, take from the richest
+			} else {
+				people, err := state.UglyBeanLeaderboard(data.ServerID, false, 1)
+				if err != nil {
+					continue
+				}
+				userID := people[0].User
+				state.AddBeans(data.ServerID, userID, balance)
+			}
+		}
+	}
 }
 
 // Loads all the messages sent after `mostrecentid`, called on startup
