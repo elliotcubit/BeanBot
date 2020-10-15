@@ -193,7 +193,7 @@ func GetUserBalance(server, user string) (int, error) {
 	return amount, nil
 }
 
-// Internal call that doesn't pprint results -- TODO make the pprint a wrapper around this one that convert them
+// Leaderboard for "Internal Use"
 func UglyBeanLeaderboard(serverID string, direction bool, n int) ([]*BeanData, error) {
 	var user string
 	var amount int
@@ -217,36 +217,22 @@ func UglyBeanLeaderboard(serverID string, direction bool, n int) ([]*BeanData, e
 	return result, nil
 }
 
+// Get leaderboard and prettify names
 func GetBeanLeaderboard(s *discordgo.Session, serverID string, direction bool, n int) ([]*BeanData, error) {
-	var user string
-	var amount int
-	result := make([]*BeanData, 0)
-	dir := "DESC"
-	if direction {
-		dir = "ASC"
-	}
-	rows, err := database.Query(fmt.Sprintf(getLeaderboardStatement, serverID, dir, n))
+	results, err := UglyBeanLeaderboard(serverID, direction, n)
 	if err != nil {
-		return result, err
+		return results, err
 	}
-	defer rows.Close()
-	for rows.Next() {
-		err := rows.Scan(&user, &amount)
+	for _, data := range results {
+		userStruct, err := s.GuildMember(serverID, data.User)
 		if err != nil {
-			return result, err
-		}
-		// Get user identifier from UUID
-		// TODO use nicknames instead if possible
-		userStruct, err := s.User(user)
-		if err != nil {
-			// Show a placeholder if this happens somehow
-			log.Println("We couldn't retrieve user data for UUID %s", user)
-			result = append(result, &BeanData{User: "[???]", Amount: amount})
+			log.Println("We couldn't retrieve GuildMember for UUID %s", data.User)
+			data.User = "[???]"
 			continue
 		}
-		result = append(result, &BeanData{User: userStruct.String(), Amount: amount})
+		data.User = userStruct.Nick
 	}
-	return result, nil
+	return results, nil
 }
 
 /*
