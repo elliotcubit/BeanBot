@@ -36,7 +36,7 @@ func (h Leaderboard) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 	// Check if number was specified
 	if len(data) > 3 {
-		amount, err = strconv.Atoi(data[1])
+		amount, err = strconv.Atoi(data[3])
 		if err != nil {
 			amount = 5
 		}
