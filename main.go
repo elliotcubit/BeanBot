@@ -29,17 +29,8 @@ import (
 func main() {
 	log.Println("Loading golordsbot")
 
-	// Get credentials
-	DISCORD_ID := os.Getenv("DISCORD_ID")
-	DISCORD_SECRET := os.Getenv("DISCORD_SECRET")
 	DISCORD_TOKEN := os.Getenv("DISCORD_TOKEN")
 
-	if DISCORD_ID == "" {
-		log.Fatal("DISCORD_ID environment variable not set")
-	}
-	if DISCORD_SECRET == "" {
-		log.Fatal("DISCORD_SECRET environment variable not set")
-	}
 	if DISCORD_TOKEN == "" {
 		log.Fatal("DISCORD_TOKEN environment variable not set")
 	}
