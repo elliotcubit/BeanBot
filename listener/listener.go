@@ -32,12 +32,18 @@ func init() {
 				if err != nil {
 					continue
 				}
+				if len(people) < 1 {
+					continue
+				}
 				userID := people[0].User
 				state.AddBeans(data.ServerID, userID, balance)
 				// Otherwise, take from the richest
 			} else {
 				people, err := state.UglyBeanLeaderboard(data.ServerID, false, 1)
 				if err != nil {
+					continue
+				}
+				if len(people) < 1 {
 					continue
 				}
 				userID := people[0].User
