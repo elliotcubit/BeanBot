@@ -68,7 +68,10 @@ func ProcessMessage(m *state.MessageData) {
 	}
 
 	if isCorrect {
-		state.AddBeans(m.GuildID, m.AuthorID, m.Number)
+		_, err := state.AddBeans(m.GuildID, m.AuthorID, m.Number)
+		if err != nil {
+			return
+		}
 		// Mark ourselves as parsed
 		ltcChans[m.ChannelID].MostRecentNumber = m.Number
 		ltcChans[m.ChannelID].MostRecentAuthorID = m.AuthorID
@@ -79,14 +82,17 @@ func ProcessMessage(m *state.MessageData) {
 		}
 	} else {
 		num := ltcChans[m.ChannelID].MostRecentNumber
+		// Subtract the sum of all awarded beans to keep the net at zero
+		amount := (num * (num + 1)) / 2
+		_, err := state.AddBeans(m.GuildID, m.AuthorID, -amount)
+		if err != nil {
+			return
+		}
+
 		// Back to original state
 		ltcChans[m.ChannelID].MostRecentNumber = -1
 		ltcChans[m.ChannelID].MostRecentAuthorID = ""
 		ltcChans[m.ChannelID].MostRecentID = m.ID
-
-		// Subtract the sum of all awarded beans to keep the net at zero
-		amount := (num * (num + 1)) / 2
-		state.AddBeans(m.GuildID, m.AuthorID, -amount)
 
 		embed := &discordgo.MessageEmbed{Color: 0x3498DB}
 		embed.Title = "Uh Oh"

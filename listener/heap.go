@@ -17,11 +17,11 @@ type MessageHeap struct {
 	m []*state.MessageData
 }
 
-func (m MessageHeap) Len() int {
+func (m *MessageHeap) Len() int {
 	return len(m.m)
 }
 
-func (m MessageHeap) Less(i, j int) bool {
+func (m *MessageHeap) Less(i, j int) bool {
 	return m.m[i].Timestamp.Before(m.m[j].Timestamp)
 }
 
@@ -43,7 +43,7 @@ func (m *MessageHeap) Pop() interface{} {
 	return item
 }
 
-func (m MessageHeap) ShouldPop() bool {
+func (m *MessageHeap) ShouldPop() bool {
 	return m.Len() != 0 && m.m[0].Timestamp.Before(time.Now().Add(time.Millisecond*-MESSAGE_QUEUE_FLUSH_INTERVAL))
 }
 

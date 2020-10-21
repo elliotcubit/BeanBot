@@ -32,7 +32,7 @@ func (h Help) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 	helpMessage += "risk: How many beans will I lose if I make a mistake? !bean risk\n"
 
 	embed.Description = helpMessage
-	s.ChannelMessageSendEmbed(m.ChannelID, embed)
+	_, _ = s.ChannelMessageSendEmbed(m.ChannelID, embed)
 }
 
 func (h Help) Prefixes() []string {

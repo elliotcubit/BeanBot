@@ -100,7 +100,7 @@ func GetServerSum(serverID string) int {
 }
 
 func GetAllServers() map[string]*ChannelData {
-	result := make(map[string]*ChannelData, 0)
+	result := make(map[string]*ChannelData)
 
 	rows, err := database.Query(fetchAllServersStatement)
 	if err != nil {
@@ -226,7 +226,7 @@ func GetBeanLeaderboard(s *discordgo.Session, serverID string, direction bool, n
 	for _, data := range results {
 		userStruct, err := s.GuildMember(serverID, data.User)
 		if err != nil {
-			log.Println("We couldn't retrieve GuildMember for UUID %s", data.User)
+			log.Printf("We couldn't retrieve GuildMember for UUID %s", data.User)
 			data.User = "[???]"
 			continue
 		}

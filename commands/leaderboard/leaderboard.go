@@ -52,7 +52,7 @@ func (h Leaderboard) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 		out += fmt.Sprintf("%-2d | %-32s %8d beans\n", ranking+1, data.User, data.Amount)
 	}
 	out += "```"
-	s.ChannelMessageSend(m.ChannelID, out)
+	_, _ = s.ChannelMessageSend(m.ChannelID, out)
 }
 
 func (h Leaderboard) Prefixes() []string {

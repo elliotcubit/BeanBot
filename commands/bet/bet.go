@@ -32,7 +32,7 @@ type Challenge struct {
 func (h Bet) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 	data := strings.SplitN(m.Content, " ", 4)
 	if len(m.Mentions) < 1 {
-		s.ChannelMessageSend(m.ChannelID, "You must mention someone to make a challenge.")
+		_, _ = s.ChannelMessageSend(m.ChannelID, "You must mention someone to make a challenge.")
 		return
 	}
 
@@ -47,34 +47,34 @@ func (h Bet) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 			challenge.Challenger == challengee &&
 			challenge.Challengee == challenger {
 			if amount == 0 || challenge.Amount == amount {
-				s.ChannelMessageSend(m.ChannelID, executeBeanGame(index))
+				_, _ = s.ChannelMessageSend(m.ChannelID, executeBeanGame(index))
 				return
 			}
 		}
 	}
 
 	if amount < 1 {
-		s.ChannelMessageSend(m.ChannelID, "You cannot challenge someone for less than one bean.")
+		_, _ = s.ChannelMessageSend(m.ChannelID, "You cannot challenge someone for less than one bean.")
 		return
 	}
 
 	challengerBalance, err := state.GetUserBalance(serverID, challenger)
 	if err != nil {
-		s.ChannelMessageSend(m.ChannelID, "There was a problem creating your challenge.")
+		_, _ = s.ChannelMessageSend(m.ChannelID, "There was a problem creating your challenge.")
 		return
 	}
 	if challengerBalance < amount {
-		s.ChannelMessageSend(m.ChannelID, "You do not have enough beans to make that bet.")
+		_, _ = s.ChannelMessageSend(m.ChannelID, "You do not have enough beans to make that bet.")
 		return
 	}
 
 	challengeesBalance, err := state.GetUserBalance(serverID, challengee)
 	if err != nil {
-		s.ChannelMessageSend(m.ChannelID, "There was a problem creating your challenge.")
+		_, _ = s.ChannelMessageSend(m.ChannelID, "There was a problem creating your challenge.")
 		return
 	}
 	if challengeesBalance < amount {
-		s.ChannelMessageSend(m.ChannelID, "The person you're challenging does not have enough beans to make that bet.")
+		_, _ = s.ChannelMessageSend(m.ChannelID, "The person you're challenging does not have enough beans to make that bet.")
 		return
 	}
 
@@ -84,7 +84,7 @@ func (h Bet) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 			challenge.Challenger == challenger &&
 			challenge.Challengee == challengee {
 			if challenge.Amount == amount {
-				s.ChannelMessageSend(m.ChannelID, "You have already made that challenge, and it hasn't been accepted yet.")
+				_, _ = s.ChannelMessageSend(m.ChannelID, "You have already made that challenge, and it hasn't been accepted yet.")
 				return
 			}
 		}
@@ -97,7 +97,7 @@ func (h Bet) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 		Amount:     amount,
 	}
 	challenges = append(challenges, challenge)
-	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Challenge created for %d beans. Accept by challenging back.", amount))
+	_, _ = s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Challenge created for %d beans. Accept by challenging back.", amount))
 }
 
 func (h Bet) Prefixes() []string {
