@@ -86,7 +86,7 @@ func GetServerData(guildID string) *state.ChannelData {
 	return nil
 }
 
-func UpdateLTCChannel(serverID, channelID, messageID string) {
+func UpdateLTCChannel(serverID, channelID, messageID string) *state.ChannelData {
 	// Unregister the old channel if needed
 	var oldServerData *state.ChannelData
 	var oldChannel string
@@ -113,6 +113,7 @@ func UpdateLTCChannel(serverID, channelID, messageID string) {
 			HighestNumberAchieved: -1,
 		}
 	}
+	return ltcChans[channelID]
 }
 
 func timeFromID(id string) (t time.Time, err error) {

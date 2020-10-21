@@ -1,6 +1,7 @@
 package configure
 
 import (
+	"fmt"
 	"log"
 
 	"beanbot/handlers"
@@ -36,8 +37,14 @@ func (h Configure) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 	// Do not require a restart for this
-	listener.UpdateLTCChannel(m.GuildID, m.ChannelID, m.ID)
-	s.ChannelMessageSend(m.ChannelID, "This channel is now registered as the learn to count channel. Start at `1`, or wherever you left off in a previous channel I listened to.")
+	channelData := listener.UpdateLTCChannel(m.GuildID, m.ChannelID, m.ID)
+	var start int
+	if channelData.MostRecentNumber == -1 {
+		start = 1
+	} else {
+		start = channelData.MostRecentNumber + 1
+	}
+	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("This channel is now registered as the learn to count channel. Counting starts at `%d` here.", start))
 }
 
 func (h Configure) Prefixes() []string {
