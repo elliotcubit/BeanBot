@@ -36,7 +36,10 @@ func init() {
 					continue
 				}
 				userID := people[0].User
-				state.AddBeans(data.ServerID, userID, balance)
+				_, err = state.AddBeans(data.ServerID, userID, balance)
+				if err != nil {
+					continue
+				}
 				// Otherwise, take from the richest
 			} else {
 				people, err := state.UglyBeanLeaderboard(data.ServerID, false, 1)
@@ -47,7 +50,10 @@ func init() {
 					continue
 				}
 				userID := people[0].User
-				state.AddBeans(data.ServerID, userID, balance)
+				_, err = state.AddBeans(data.ServerID, userID, balance)
+				if err != nil {
+					continue
+				}
 			}
 		}
 	}
@@ -72,7 +78,7 @@ func LoadUnseenMessages(s *discordgo.Session) {
 				continue
 			}
 			m.GuildID = data.ServerID
-			EvaluateMessage(s, &discordgo.MessageCreate{m})
+			EvaluateMessage(s, &discordgo.MessageCreate{Message: m})
 		}
 	}
 }

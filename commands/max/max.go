@@ -23,7 +23,7 @@ func (h Max) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if data != nil {
 		amt = data.HighestNumberAchieved
 	}
-	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("This server has counted to %d.", amt))
+	_, _ = s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("This server has counted to %d.", amt))
 }
 
 func (h Max) Prefixes() []string {

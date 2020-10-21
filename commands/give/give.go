@@ -33,7 +33,7 @@ func (h Give) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 	if amount <= 0 {
-		s.ChannelMessageSend(m.ChannelID, "You must send at least one bean.")
+		_, _ = s.ChannelMessageSend(m.ChannelID, "You must send at least one bean.")
 		return
 	}
 
@@ -41,17 +41,17 @@ func (h Give) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 	donatorID := m.Author.ID
 
 	if m.Mentions[0].Bot && m.Mentions[0].ID != s.State.User.ID {
-		s.ChannelMessageSend(m.ChannelID, "You cannot give beans to other bots.")
+		_, _ = s.ChannelMessageSend(m.ChannelID, "You cannot give beans to other bots.")
 		return
 	}
 
 	donatorBalance, err := state.GetUserBalance(m.GuildID, donatorID)
 	if err != nil {
-		s.ChannelMessageSend(m.ChannelID, "Bean transfer failed.")
+		_, _ = s.ChannelMessageSend(m.ChannelID, "Bean transfer failed.")
 		return
 	}
 	if donatorBalance < amount {
-		s.ChannelMessageSend(m.ChannelID, "You do not have enough beans.")
+		_, _ = s.ChannelMessageSend(m.ChannelID, "You do not have enough beans.")
 		return
 	}
 	err = state.TransferBeans(
@@ -62,9 +62,9 @@ func (h Give) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 	)
 
 	if err != nil {
-		s.ChannelMessageSend(m.ChannelID, "Bean transfer failed.")
+		_, _ = s.ChannelMessageSend(m.ChannelID, "Bean transfer failed.")
 	} else {
-		s.ChannelMessageSend(m.ChannelID, "Bean transfer complete.")
+		_, _ = s.ChannelMessageSend(m.ChannelID, "Bean transfer complete.")
 	}
 }
 

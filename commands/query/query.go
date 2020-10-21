@@ -28,7 +28,7 @@ func (h Query) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if err != nil {
 		return
 	}
-	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("%s: %d beans", user.String(), amount))
+	_, _ = s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("%s: %d beans", user.String(), amount))
 }
 
 func (h Query) Prefixes() []string {

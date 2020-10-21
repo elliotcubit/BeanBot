@@ -24,7 +24,7 @@ func (h Risk) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 		n := data.MostRecentNumber
 		amt = (n * (n + 1)) / 2
 	}
-	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("You will lose %d beans if you make a mistake right now.", amt))
+	_, _ = s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("You will lose %d beans if you make a mistake right now.", amt))
 }
 
 func (h Risk) Prefixes() []string {

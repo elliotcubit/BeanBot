@@ -2,7 +2,6 @@ package configure
 
 import (
 	"fmt"
-	"log"
 
 	"beanbot/handlers"
 	"beanbot/listener"
@@ -26,14 +25,13 @@ func (h Configure) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 	if perms&discordgo.PermissionManageChannels < 1 {
-		s.ChannelMessageSend(m.ChannelID, "You must have the Manage Channels permission to make this change.")
+		_, _ = s.ChannelMessageSend(m.ChannelID, "You must have the Manage Channels permission to make this change.")
 		return
 	}
 	// This channel also handles updating the channel if it is already set.
 	err = state.AddServerChannelToList(m.GuildID, m.ChannelID)
 	if err != nil {
-		log.Println(err)
-		s.ChannelMessageSend(m.ChannelID, "An internal error occured while registering this channel. Please try again later.")
+		_, _ = s.ChannelMessageSend(m.ChannelID, "An internal error occured while registering this channel. Please try again later.")
 		return
 	}
 	// Do not require a restart for this
@@ -44,7 +42,7 @@ func (h Configure) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 	} else {
 		start = channelData.MostRecentNumber + 1
 	}
-	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("This channel is now registered as the learn to count channel. Counting starts at `%d` here.", start))
+	_, _ = s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("This channel is now registered as the learn to count channel. Counting starts at `%d` here.", start))
 }
 
 func (h Configure) Prefixes() []string {

@@ -61,7 +61,7 @@ func main() {
 
 	log.Println("Golords bot is alive. SIGINT exits.")
 	sc := make(chan os.Signal, 1)
-	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
+	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-sc
 
 	// Ensure we don't quit in the middle of a message being parsed due to bad timing
