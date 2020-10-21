@@ -18,7 +18,7 @@ func init() {
 type Max struct{}
 
 func (h Max) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
-	data := listener.GetServerData(m.ChannelID)
+	data := listener.GetServerData(m.GuildID)
 	amt := 0
 	if data != nil {
 		amt = data.HighestNumberAchieved

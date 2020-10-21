@@ -77,9 +77,11 @@ func LoadUnseenMessages(s *discordgo.Session) {
 	}
 }
 
-func GetServerData(channelID string) *state.ChannelData {
-	if data, ok := ltcChans[channelID]; ok {
-		return data
+func GetServerData(guildID string) *state.ChannelData {
+	for _, serverData := range ltcChans {
+		if serverData.ServerID == guildID {
+			return serverData
+		}
 	}
 	return nil
 }
