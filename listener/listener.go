@@ -38,6 +38,7 @@ func init() {
 				userID := people[0].User
 				_, err = state.AddBeans(data.ServerID, userID, balance)
 				if err != nil {
+					log.Println("Something bad happened while correcting bean amounts")
 					continue
 				}
 				// Otherwise, take from the richest
@@ -52,6 +53,7 @@ func init() {
 				userID := people[0].User
 				_, err = state.AddBeans(data.ServerID, userID, balance)
 				if err != nil {
+					log.Println("Something bad happened while correcting bean amounts")
 					continue
 				}
 			}
