@@ -97,7 +97,7 @@ func ProcessMessage(m *state.MessageData) {
 		embed := &discordgo.MessageEmbed{Color: 0x3498DB}
 		embed.Title = "Uh Oh"
 		embed.Description = fmt.Sprintf("<@%s> spilled and lost %d beans!", m.AuthorID, amount)
-		m.Session.ChannelMessageSendEmbed(m.ChannelID, embed)
+		_, _ = m.Session.ChannelMessageSendEmbed(m.ChannelID, embed)
 
 		// Update the message for when we send it to the db
 		m.Number = -1   // Recover a failed state on reset

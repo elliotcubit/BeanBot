@@ -26,10 +26,6 @@ import (
 	_ "beanbot/commands/risk"
 )
 
-const (
-	UNUSED = 5
-)
-
 func main() {
 	log.Println("Loading golordsbot")
 
