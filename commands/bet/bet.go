@@ -39,8 +39,8 @@ func (h Bet) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	serverID := m.GuildID
 	amount, _ := strconv.Atoi(data[2])
-	challenger := m.Author.String()
-	challengee := m.Mentions[0].String()
+	challenger := m.Author.ID
+	challengee := m.Mentions[0].ID
 
 	log.Printf("Attempting to make bean bet in server %s for from %s to %s", serverID, challenger, challengee)
 
