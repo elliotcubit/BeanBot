@@ -230,7 +230,11 @@ func GetBeanLeaderboard(s *discordgo.Session, serverID string, direction bool, n
 			data.User = "[???]"
 			continue
 		}
-		data.User = userStruct.Nick
+		if userStruct.Nick != "" {
+			data.User = userStruct.Nick
+		} else {
+			data.User = userStruct.User.Username
+		}
 	}
 	return results, nil
 }
