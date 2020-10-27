@@ -67,7 +67,7 @@ func (h Bet) Do(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 	if challengerBalance < amount {
-		log.Println("Failed to make bean bet. amount: %d, balance: %d", amount, challengerBalance)
+		log.Printf("Failed to make bean bet. amount: %d, balance: %d", amount, challengerBalance)
 		_, _ = s.ChannelMessageSend(m.ChannelID, "You do not have enough beans to make that bet.")
 		return
 	}
